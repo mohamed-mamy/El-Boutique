@@ -5,6 +5,8 @@ node_modules/
 .env
 .env.local
 .env.production
+package-lock.json
+package.json
 
 # Build output
 dist/
@@ -28,3 +30,4 @@ Thumbs.db
 # Cloudinary temp
 tmp/
 uploads/
+.gitignore
