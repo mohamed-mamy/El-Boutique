@@ -1,0 +1,95 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", "Cairo", system-ui, sans-serif;
+  --font-serif: "Playfair Display", serif;
+  
+  /* Primary colors - Elegant Beige/Rose Gold palette */
+  --color-primary-50: #fdfbf7;  /* Soft Ivory */
+  --color-primary-100: #faf9f6; 
+  --color-primary-200: #f5f0e6; /* Warm Beige */
+  --color-primary-300: #e8dfd5; 
+  --color-primary-400: #d8a7a7; /* Dusty Rose */
+  --color-primary-500: #b76e79; /* Rose Gold */
+  --color-primary-600: #9e5b66; 
+  --color-primary-700: #854b54; 
+  --color-primary-800: #5c4a4a; /* Soft Brown */
+  --color-primary-900: #4a3b3b; 
+  --color-primary-950: #332828; /* Dark Brown/Gray */
+
+  --color-accent-50: #fff5f8;
+  --color-accent-100: #ffe4ef;
+  --color-accent-200: #fecde1; /* Soft Pink */
+  --color-accent-300: #fba6ca;
+  --color-accent-400: #f672a7;
+  --color-accent-500: #ee4587;
+  --color-accent-600: #d62465;
+  --color-accent-700: #b7174e;
+  --color-accent-800: #981543;
+  --color-accent-900: #7f163b;
+  --color-accent-950: #4d071f;
+
+  /* Additional colors for neutral/text */
+  --color-neutral-50: #fcfcfc;
+  --color-neutral-100: #f5f5f5;
+  --color-neutral-200: #e5e5e5;
+  --color-neutral-300: #d4d4d4;
+  --color-neutral-400: #a3a3a3;
+  --color-neutral-500: #737373;
+  --color-neutral-600: #525252;
+  --color-neutral-700: #404040;
+  --color-neutral-800: #262626;
+  --color-neutral-900: #171717; /* Dark Gray */
+}
+
+@layer base {
+  html {
+    font-family: "Inter", "Cairo", system-ui, sans-serif;
+    background-color: var(--color-primary-50);
+    color: var(--color-neutral-900);
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: "Playfair Display", serif;
+  }
+
+  /* RTL specific base adjustments */
+  html[dir="rtl"] {
+    text-align: right;
+  }
+  
+  /* Arabic headings */
+  html[dir="rtl"] h1, 
+  html[dir="rtl"] h2, 
+  html[dir="rtl"] h3, 
+  html[dir="rtl"] h4, 
+  html[dir="rtl"] h5, 
+  html[dir="rtl"] h6 {
+    font-family: "Cairo", "Playfair Display", serif;
+  }
+}
+
+@layer utilities {
+  .rtl-reverse {
+    /* Useful utility for reversing margin/padding in RTL */
+  }
+  
+  /* Subtle animations */
+  .fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  
+  .scale-up {
+    animation: scaleUp 0.3s ease-in-out;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes scaleUp {
+    from { opacity: 0; transform: scale(0.98); }
+    to { opacity: 1; transform: scale(1); }
+  }
+}
