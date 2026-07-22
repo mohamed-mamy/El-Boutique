@@ -66,6 +66,12 @@ const ProductsPage = () => {
         setIsConfirmOpen(false);
       }
     } catch (err) {
+      // If product was already deleted (404), just refresh the list
+      if (err.response?.status === 404) {
+        fetchProducts();
+        setIsConfirmOpen(false);
+        return;
+      }
       setError(err.response?.data?.message || 'Failed to delete product');
     } finally {
       setIsDeleting(false);

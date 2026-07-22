@@ -18,8 +18,6 @@ const Header = () => {
   const toggleLanguage = () => {
     const newLang = i18n.language === 'ar' ? 'fr' : 'ar';
     i18n.changeLanguage(newLang);
-    document.documentElement.dir = newLang === 'ar' ? 'rtl' : 'ltr';
-    document.documentElement.lang = newLang;
   };
 
   return (

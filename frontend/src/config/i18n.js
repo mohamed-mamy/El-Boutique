@@ -21,4 +21,15 @@ i18n
     }
   });
 
+// Set dir/lang on initial load and on every language change
+const applyDirection = (lng) => {
+  const dir = lng === 'ar' ? 'rtl' : 'ltr';
+  document.documentElement.dir = dir;
+  document.documentElement.lang = lng;
+};
+
+applyDirection(i18n.language);
+i18n.on('languageChanged', applyDirection);
+
 export default i18n;
+
