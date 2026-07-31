@@ -39,7 +39,7 @@ const FavouritesPage = () => {
           {t('favourites.title', 'Your Favourites')}
         </h1>
         <span className="text-gray-500 bg-gray-100 px-3 py-1 rounded-full text-sm font-medium">
-          {favourites.length} {favourites.length === 1 ? 'Item' : 'Items'}
+          {favourites.length} {favourites.length === 1 ? t('favourites.item') : t('favourites.items')}
         </span>
       </div>
 

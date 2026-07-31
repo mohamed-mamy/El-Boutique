@@ -26,6 +26,11 @@ const settingsSchema = new mongoose.Schema(
       instagram: { type: String, default: '' },
       tiktok: { type: String, default: '' },
     },
+    storeLink: {
+      type: String,
+      default: '',
+      trim: true,
+    },
   },
   {
     timestamps: true,

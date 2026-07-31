@@ -1,15 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
+import { useSettings } from '../context/SettingsContext';
 import ScrollToTop from '../components/common/ScrollToTop';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Link2, Copy, Check } from 'lucide-react';
 
 const AdminLayout = () => {
   const { t, i18n } = useTranslation();
   const { logout, admin } = useAuth();
+  const { settings } = useSettings();
   const location = useLocation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const toggleLanguage = () => {
     const newLang = i18n.language === 'ar' ? 'fr' : 'ar';
@@ -18,6 +21,14 @@ const AdminLayout = () => {
 
   const closeSidebar = () => {
     if (isSidebarOpen) setIsSidebarOpen(false);
+  };
+
+  const handleCopyLink = () => {
+    if (settings?.storeLink) {
+      navigator.clipboard.writeText(settings.storeLink);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
   };
 
   const navLinks = [
@@ -84,22 +95,48 @@ const AdminLayout = () => {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Top Header */}
-        <header className="bg-white border-b border-primary-200 h-16 flex items-center justify-between px-4 lg:px-8 shrink-0">
-          <div className="flex items-center">
-            <button 
-              onClick={() => setIsSidebarOpen(true)} 
-              className="lg:hidden p-2 text-primary-600 hover:text-primary-900 me-2"
-            >
-              <Menu className="w-6 h-6" strokeWidth={1.5} />
-            </button>
-          </div>
-          <div className="flex items-center">
-            <button
-              onClick={toggleLanguage}
-              className="text-[11px] font-semibold uppercase tracking-[0.15em] text-primary-600 hover:text-primary-900 transition-colors px-3 py-2"
-            >
-              {i18n.language === 'ar' ? 'FR' : 'AR'}
-            </button>
+        <header className="bg-white border-b border-primary-200 shrink-0">
+          <div className="h-16 flex items-center justify-between px-4 lg:px-8">
+            <div className="flex items-center">
+              <button 
+                onClick={() => setIsSidebarOpen(true)} 
+                className="lg:hidden p-2 text-primary-600 hover:text-primary-900 me-2"
+              >
+                <Menu className="w-6 h-6" strokeWidth={1.5} />
+              </button>
+              {settings?.storeLink && (
+                <div className="hidden md:flex items-center gap-2 bg-primary-50 border border-primary-200 rounded-lg px-3 py-1.5 ms-4">
+                  <Link2 size={14} className="text-primary-500 shrink-0" />
+                  <span className="text-xs text-primary-700 truncate max-w-[300px]">{settings.storeLink}</span>
+                  <button
+                    onClick={handleCopyLink}
+                    className="shrink-0 p-1 rounded hover:bg-primary-100 transition-colors"
+                    title={t('admin.copy_link', 'Copy link')}
+                  >
+                    {copied ? <Check size={14} className="text-green-600" /> : <Copy size={14} className="text-primary-500" />}
+                  </button>
+                </div>
+              )}
+            </div>
+            <div className="flex items-center gap-2">
+              {settings?.storeLink && (
+                <div className="md:hidden flex items-center gap-1.5 bg-primary-50 border border-primary-200 rounded-lg px-2 py-1">
+                  <Link2 size={12} className="text-primary-500" />
+                  <button
+                    onClick={handleCopyLink}
+                    className="text-xs text-primary-700 font-medium"
+                  >
+                    {copied ? t('admin.copied', 'Copied!') : t('admin.copy_link', 'Copy link')}
+                  </button>
+                </div>
+              )}
+              <button
+                onClick={toggleLanguage}
+                className="text-[11px] font-semibold uppercase tracking-[0.15em] text-primary-600 hover:text-primary-900 transition-colors px-3 py-2"
+              >
+                {i18n.language === 'ar' ? 'FR' : 'AR'}
+              </button>
+            </div>
           </div>
         </header>
 

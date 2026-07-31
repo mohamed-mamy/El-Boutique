@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { ArrowLeft, Loader2, Package, MapPin, User, MessageCircle, Calendar, X } from 'lucide-react';
 import api from '../../config/axios';
 import OrderStatusBadge from '../../components/admin/OrderStatusBadge';
@@ -7,6 +8,7 @@ import OrderStatusBadge from '../../components/admin/OrderStatusBadge';
 const OrderDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -25,11 +27,11 @@ const OrderDetailPage = () => {
         if (found) {
           setOrder(found);
         } else {
-          setError('Order not found');
+          setError(t('admin.order_not_found'));
         }
       }
     } catch (err) {
-      setError('Failed to fetch order details');
+      setError(t('admin.failed_fetch_order'));
       console.error(err);
     } finally {
       setLoading(false);
@@ -46,7 +48,7 @@ const OrderDetailPage = () => {
       await api.patch(`/orders/${id}/status`, { status: newStatus });
       setOrder({ ...order, status: newStatus });
     } catch (error) {
-      alert('Failed to update order status');
+      alert(t('admin.failed_update_status'));
     }
   };
 
@@ -61,9 +63,9 @@ const OrderDetailPage = () => {
   if (error || !order) {
     return (
       <div className="max-w-3xl mx-auto px-4 py-12 text-center">
-        <p className="text-red-600 mb-4">{error || 'Order not found'}</p>
+        <p className="text-red-600 mb-4">{error || t('admin.order_not_found')}</p>
         <button onClick={() => navigate('/admin/orders')} className="text-indigo-600 hover:underline">
-          Back to Orders
+          {t('admin.back_to_orders')}
         </button>
       </div>
     );
@@ -80,22 +82,22 @@ const OrderDetailPage = () => {
             <ArrowLeft size={20} className="text-gray-600" />
           </button>
           <h1 className="text-2xl font-bold text-gray-900">
-            Order #{order._id.slice(-6).toUpperCase()}
+            {t('admin.order_number')} #{order._id.slice(-6).toUpperCase()}
           </h1>
           <OrderStatusBadge status={order.status} />
         </div>
         
         <div className="flex items-center gap-3">
-          <span className="text-sm font-medium text-gray-700">Update Status:</span>
+          <span className="text-sm font-medium text-gray-700">{t('admin.update_status')}</span>
           <select
             value={order.status}
             onChange={handleStatusChange}
             className="border-gray-300 rounded-md text-sm focus:ring-black focus:border-black"
           >
-            <option value="pending">Pending</option>
-            <option value="confirmed">Confirmed</option>
-            <option value="completed">Completed</option>
-            <option value="cancelled">Cancelled</option>
+            <option value="pending">{t('admin.pending')}</option>
+            <option value="confirmed">{t('admin.confirmed')}</option>
+            <option value="completed">{t('admin.completed')}</option>
+            <option value="cancelled">{t('admin.cancelled')}</option>
           </select>
         </div>
       </div>
@@ -107,7 +109,7 @@ const OrderDetailPage = () => {
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
             <div className="px-6 py-4 border-b border-gray-100 bg-gray-50 flex items-center gap-2">
               <Package className="w-5 h-5 text-gray-400" />
-              <h2 className="text-lg font-medium text-gray-900">Order Items</h2>
+              <h2 className="text-lg font-medium text-gray-900">{t('admin.order_items')}</h2>
             </div>
             <div className="divide-y divide-gray-200">
               {order.items.map((item, idx) => (
@@ -127,18 +129,18 @@ const OrderDetailPage = () => {
                     </div>
                     <div>
                       <h3 className="text-sm font-medium text-gray-900">{item.productName}</h3>
-                      <p className="text-sm text-gray-500">Qty: {item.quantity}</p>
+                      <p className="text-sm text-gray-500">{t('admin.qty')} {item.quantity}</p>
                     </div>
                   </div>
                   <div className="text-right">
                     <p className="text-sm font-medium text-gray-900">{item.price} MRU</p>
-                    <p className="text-xs text-gray-500">Total: {item.price * item.quantity} MRU</p>
+                    <p className="text-xs text-gray-500">{t('admin.total')}: {item.price * item.quantity} MRU</p>
                   </div>
                 </div>
               ))}
             </div>
             <div className="bg-gray-50 px-6 py-4 border-t border-gray-100 flex justify-between items-center">
-              <span className="text-base font-medium text-gray-900">Total Amount</span>
+              <span className="text-base font-medium text-gray-900">{t('admin.total_amount')}</span>
               <span className="text-xl font-bold text-gray-900">{order.totalPrice} MRU</span>
             </div>
           </div>
@@ -149,15 +151,15 @@ const OrderDetailPage = () => {
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
             <div className="px-6 py-4 border-b border-gray-100 bg-gray-50 flex items-center gap-2">
               <User className="w-5 h-5 text-gray-400" />
-              <h2 className="text-lg font-medium text-gray-900">Customer Info</h2>
+              <h2 className="text-lg font-medium text-gray-900">{t('admin.customer_info')}</h2>
             </div>
             <div className="p-6 space-y-4">
               <div>
-                <p className="text-sm font-medium text-gray-500">Name</p>
+                <p className="text-sm font-medium text-gray-500">{t('admin.name')}</p>
                 <p className="text-base text-gray-900">{order.customerName}</p>
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-500">Phone</p>
+                <p className="text-sm font-medium text-gray-500">{t('admin.phone')}</p>
                 <div className="flex items-center justify-between mt-1">
                   <p className="text-base text-gray-900">{order.customerPhone}</p>
                   <a
@@ -166,7 +168,7 @@ const OrderDetailPage = () => {
                     rel="noopener noreferrer"
                     className="flex items-center gap-1.5 text-xs font-medium text-green-700 bg-green-100 px-2 py-1 rounded hover:bg-green-200 transition-colors"
                   >
-                    <MessageCircle size={14} /> WhatsApp
+                    <MessageCircle size={14} /> {t('admin.whatsapp')}
                   </a>
                 </div>
               </div>
@@ -176,14 +178,14 @@ const OrderDetailPage = () => {
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
              <div className="px-6 py-4 border-b border-gray-100 bg-gray-50 flex items-center gap-2">
               <Calendar className="w-5 h-5 text-gray-400" />
-              <h2 className="text-lg font-medium text-gray-900">Order Timeline</h2>
+              <h2 className="text-lg font-medium text-gray-900">{t('admin.order_timeline')}</h2>
             </div>
             <div className="p-6">
               <p className="text-sm text-gray-600">
-                Created on: <span className="font-medium text-gray-900">{new Date(order.createdAt).toLocaleString()}</span>
+                {t('admin.created_on')} <span className="font-medium text-gray-900">{new Date(order.createdAt).toLocaleString()}</span>
               </p>
               <p className="text-sm text-gray-600 mt-2">
-                Last updated: <span className="font-medium text-gray-900">{new Date(order.updatedAt).toLocaleString()}</span>
+                {t('admin.last_updated')} <span className="font-medium text-gray-900">{new Date(order.updatedAt).toLocaleString()}</span>
               </p>
             </div>
           </div>

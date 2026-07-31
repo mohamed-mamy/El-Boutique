@@ -107,7 +107,7 @@ const Header = () => {
             )}
           </Link>
           <div className="pt-6 mt-2 border-t border-primary-200 flex items-center justify-between">
-            <span className="text-[11px] uppercase tracking-[0.1em] text-primary-600">Language</span>
+            <span className="text-[11px] uppercase tracking-[0.1em] text-primary-600">{t('header.language')}</span>
             <button
               onClick={() => {
                 toggleLanguage();

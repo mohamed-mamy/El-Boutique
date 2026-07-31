@@ -72,7 +72,7 @@ const ProductsPage = () => {
         setIsConfirmOpen(false);
         return;
       }
-      setError(err.response?.data?.message || 'Failed to delete product');
+      setError(err.response?.data?.message || t('admin.failed_delete'));
     } finally {
       setIsDeleting(false);
     }
@@ -145,7 +145,7 @@ const ProductsPage = () => {
                   <td colSpan="5" className="px-0 py-0">
                     <EmptyState 
                       title={t('admin.no_products', 'No products found')} 
-                      description={search ? "We couldn't find any products matching your search." : "Get started by creating your first product."}
+                      description={search ? t('admin.no_products_found_desc') : t('admin.get_started_desc')}
                     />
                   </td>
                 </tr>
@@ -197,14 +197,14 @@ const ProductsPage = () => {
                         <button
                           onClick={() => navigate(`/admin/products/edit/${product._id}`)}
                           className="p-1.5 text-primary-500 hover:text-primary-900 hover:bg-primary-50 rounded-full transition-colors"
-                          title="Edit"
+                           title={t('common.edit')}
                         >
                           <Edit2 size={18} strokeWidth={1.5} />
                         </button>
                         <button
                           onClick={() => handleDeleteClick(product)}
                           className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-full transition-colors"
-                          title="Delete"
+                           title={t('common.delete')}
                         >
                           <Trash2 size={18} strokeWidth={1.5} />
                         </button>
@@ -221,7 +221,7 @@ const ProductsPage = () => {
         {pagination && pagination.pages > 1 && (
           <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
             <span className="text-sm text-gray-700">
-              Page <span className="font-medium">{pagination.page}</span> of <span className="font-medium">{pagination.pages}</span>
+              {t('common.page')} <span className="font-medium">{pagination.page}</span> {t('common.of')} <span className="font-medium">{pagination.pages}</span>
             </span>
             <div className="flex gap-2">
               <button
@@ -229,14 +229,14 @@ const ProductsPage = () => {
                 disabled={page === 1}
                 className="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50"
               >
-                Previous
+                {t('common.previous')}
               </button>
               <button
                 onClick={() => setPage((p) => Math.min(pagination.pages, p + 1))}
                 disabled={page === pagination.pages}
                 className="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50"
               >
-                Next
+                {t('common.next')}
               </button>
             </div>
           </div>
@@ -247,12 +247,12 @@ const ProductsPage = () => {
         isOpen={isConfirmOpen}
         onClose={() => setIsConfirmOpen(false)}
         onConfirm={handleConfirmDelete}
-        title="Delete Product"
+        title={t('admin.delete_product')}
         message={
           error ? (
             <span className="text-red-600 font-medium">{error}</span>
           ) : (
-            `Are you sure you want to delete "${selectedProduct?.nameFr}"? This action cannot be undone.`
+            t('admin.confirm_delete_product', { name: selectedProduct?.nameFr || selectedProduct?.nameAr })
           )
         }
         isLoading={isDeleting}

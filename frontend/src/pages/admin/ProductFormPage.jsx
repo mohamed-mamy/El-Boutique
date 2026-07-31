@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { ArrowLeft, Loader2, Save } from 'lucide-react';
 import api from '../../config/axios';
 import MultiImageUpload from '../../components/admin/MultiImageUpload';
@@ -7,7 +8,9 @@ import MultiImageUpload from '../../components/admin/MultiImageUpload';
 const ProductFormPage = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const { i18n, t } = useTranslation();
   const isEdit = !!id;
+  const lang = i18n.language === 'ar' ? 'Ar' : 'Fr';
 
   const [categories, setCategories] = useState([]);
   const [brands, setBrands] = useState([]);
@@ -65,7 +68,7 @@ const ProductFormPage = () => {
           }
         }
       } catch (err) {
-        setError('Failed to load required data');
+        setError(t('admin.failed_load_data'));
         console.error(err);
       } finally {
         setLoading(false);
@@ -88,13 +91,21 @@ const ProductFormPage = () => {
     e.preventDefault();
     setError('');
 
-    if (formData.discountPrice && Number(formData.discountPrice) >= Number(formData.price)) {
-      setError('Discount price must be less than the regular price');
+    const nameField = `name${lang}`;
+    const descField = `description${lang}`;
+
+    if (!formData[nameField]?.trim()) {
+      setError(i18n.language === 'ar' ? 'الاسم مطلوب' : 'Le nom est requis');
       return;
     }
 
-    if (!formData.category || !formData.brand) {
-      setError('Category and Brand are required');
+    if (formData.discountPrice && Number(formData.discountPrice) >= Number(formData.price)) {
+      setError(t('admin.discount_error'));
+      return;
+    }
+
+    if (!formData.category) {
+      setError(t('admin.category_required'));
       return;
     }
 
@@ -108,7 +119,7 @@ const ProductFormPage = () => {
       }
       navigate('/admin/products');
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to save product');
+      setError(err.response?.data?.message || t('admin.failed_save'));
       setIsSubmitting(false);
     }
   };
@@ -131,7 +142,7 @@ const ProductFormPage = () => {
           <ArrowLeft size={20} className="text-gray-600" />
         </button>
         <h1 className="text-2xl font-bold text-gray-900">
-          {isEdit ? 'Edit Product' : 'Add New Product'}
+          {isEdit ? t('admin.edit_product') : t('admin.add_new_product')}
         </h1>
       </div>
 
@@ -145,80 +156,59 @@ const ProductFormPage = () => {
         
         {/* Images Section */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-          <h2 className="text-lg font-medium text-gray-900 mb-4">Product Images</h2>
+          <h2 className="text-lg font-medium text-gray-900 mb-4">{t('admin.product_images')}</h2>
           <MultiImageUpload
             images={formData.images}
             onChange={handleImagesChange}
             maxImages={5}
             folder="el-boutique/products"
           />
-          <p className="mt-2 text-sm text-gray-500">First image will be used as the primary thumbnail.</p>
+          <p className="mt-2 text-sm text-gray-500">{t('admin.product_images_help')}</p>
         </div>
 
         {/* Basic Info */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-6">
-          <h2 className="text-lg font-medium text-gray-900">Basic Information</h2>
+          <h2 className="text-lg font-medium text-gray-900">{t('admin.basic_info')}</h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Name (French)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                {t('admin.name')}
+              </label>
               <input
                 type="text"
-                name="nameFr"
+                name={`name${lang}`}
                 required
-                value={formData.nameFr}
+                value={formData[`name${lang}`]}
                 onChange={handleChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-black focus:border-black"
-                dir="ltr"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1 text-right">الاسم (عربي)</label>
-              <input
-                type="text"
-                name="nameAr"
-                required
-                value={formData.nameAr}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-black focus:border-black"
-                dir="rtl"
+                dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}
               />
             </div>
             
-            <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Description (French)</label>
-                <textarea
-                  name="descriptionFr"
-                  rows={4}
-                  value={formData.descriptionFr}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-black focus:border-black"
-                  dir="ltr"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1 text-right">الوصف (عربي)</label>
-                <textarea
-                  name="descriptionAr"
-                  rows={4}
-                  value={formData.descriptionAr}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-black focus:border-black"
-                  dir="rtl"
-                />
-              </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                {t('admin.description')}
+              </label>
+              <textarea
+                name={`description${lang}`}
+                rows={4}
+                value={formData[`description${lang}`]}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-black focus:border-black"
+                dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}
+              />
             </div>
           </div>
         </div>
 
         {/* Organization */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-6">
-          <h2 className="text-lg font-medium text-gray-900">Organization</h2>
+          <h2 className="text-lg font-medium text-gray-900">{t('admin.organization')}</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('admin.category')}</label>
               <select
                 name="category"
                 required
@@ -226,24 +216,23 @@ const ProductFormPage = () => {
                 onChange={handleChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-black focus:border-black bg-white"
               >
-                <option value="">Select Category</option>
+                <option value="">{t('admin.select_category')}</option>
                 {categories.map((c) => (
-                  <option key={c._id} value={c._id}>{c.nameFr}</option>
+                  <option key={c._id} value={c._id}>{i18n.language === 'ar' ? (c.nameAr || c.nameFr) : (c.nameFr || c.nameAr)}</option>
                 ))}
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Brand</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('admin.brand')}</label>
               <select
                 name="brand"
-                required
                 value={formData.brand}
                 onChange={handleChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-black focus:border-black bg-white"
               >
-                <option value="">Select Brand</option>
+                <option value="">{t('admin.select_brand')}</option>
                 {brands.map((b) => (
-                  <option key={b._id} value={b._id}>{b.nameFr}</option>
+                  <option key={b._id} value={b._id}>{i18n.language === 'ar' ? (b.nameAr || b.nameFr) : (b.nameFr || b.nameAr)}</option>
                 ))}
               </select>
             </div>
@@ -252,11 +241,11 @@ const ProductFormPage = () => {
 
         {/* Pricing & Inventory */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-6">
-          <h2 className="text-lg font-medium text-gray-900">Pricing & Inventory</h2>
+          <h2 className="text-lg font-medium text-gray-900">{t('admin.pricing_inventory')}</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Price (MRU)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('admin.price_mru')}</label>
               <input
                 type="number"
                 name="price"
@@ -268,7 +257,7 @@ const ProductFormPage = () => {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Discount Price (MRU) <span className="text-gray-400 font-normal">(Optional)</span></label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('admin.discount_price')} <span className="text-gray-400 font-normal">({t('admin.optional')})</span></label>
               <input
                 type="number"
                 name="discountPrice"
@@ -279,11 +268,10 @@ const ProductFormPage = () => {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Stock Quantity</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('admin.stock_quantity')}</label>
               <input
                 type="number"
                 name="quantity"
-                required
                 min="0"
                 value={formData.quantity}
                 onChange={handleChange}
@@ -291,13 +279,13 @@ const ProductFormPage = () => {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Color <span className="text-gray-400 font-normal">(Optional)</span></label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('admin.color')} <span className="text-gray-400 font-normal">({t('admin.optional')})</span></label>
               <input
                 type="text"
                 name="color"
                 value={formData.color}
                 onChange={handleChange}
-                placeholder="e.g. Red, Blue"
+                placeholder={t('admin.color_placeholder')}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-black focus:border-black"
               />
             </div>
@@ -306,7 +294,7 @@ const ProductFormPage = () => {
 
         {/* Status */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-4">
-          <h2 className="text-lg font-medium text-gray-900">Product Status</h2>
+          <h2 className="text-lg font-medium text-gray-900">{t('admin.product_status')}</h2>
           
           <div className="flex items-center">
             <input
@@ -318,7 +306,7 @@ const ProductFormPage = () => {
               className="h-4 w-4 text-black focus:ring-black border-gray-300 rounded"
             />
             <label htmlFor="isActive" className="ml-2 block text-sm text-gray-900">
-              Active (visible on website)
+              {t('admin.active_visible')}
             </label>
           </div>
           
@@ -332,7 +320,7 @@ const ProductFormPage = () => {
               className="h-4 w-4 text-black focus:ring-black border-gray-300 rounded"
             />
             <label htmlFor="isFeatured" className="ml-2 block text-sm text-gray-900">
-              Featured (shows on homepage)
+              {t('admin.featured_homepage')}
             </label>
           </div>
         </div>
@@ -344,7 +332,7 @@ const ProductFormPage = () => {
             onClick={() => navigate('/admin/products')}
             className="px-6 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black transition-colors"
           >
-            Cancel
+            {t('common.cancel')}
           </button>
           <button
             type="submit"
@@ -352,7 +340,7 @@ const ProductFormPage = () => {
             className="flex items-center gap-2 px-6 py-2 text-sm font-medium text-white bg-black border border-transparent rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black disabled:opacity-50 transition-colors"
           >
             {isSubmitting ? <Loader2 className="animate-spin" size={16} /> : <Save size={16} />}
-            {isEdit ? 'Save Changes' : 'Create Product'}
+            {isEdit ? t('admin.save_changes') : t('admin.create_product')}
           </button>
         </div>
       </form>

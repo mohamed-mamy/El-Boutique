@@ -1,8 +1,10 @@
 import React, { useState, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Upload, X, Loader2, GripVertical } from 'lucide-react';
 import api from '../../config/axios';
 
 const MultiImageUpload = ({ images, onChange, maxImages = 5, folder = 'general' }) => {
+  const { t } = useTranslation();
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState('');
   const fileInputRef = useRef(null);
@@ -12,7 +14,7 @@ const MultiImageUpload = ({ images, onChange, maxImages = 5, folder = 'general' 
     if (!files.length) return;
 
     if (images.length + files.length > maxImages) {
-      setError(`You can only upload up to ${maxImages} images`);
+      setError(t('multi_image_upload.max_images', { max: maxImages }));
       return;
     }
 
@@ -33,7 +35,7 @@ const MultiImageUpload = ({ images, onChange, maxImages = 5, folder = 'general' 
         onChange([...images, ...response.data.data]);
       }
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to upload images');
+      setError(err.response?.data?.message || t('multi_image_upload.failed_upload'));
     } finally {
       setIsUploading(false);
       if (fileInputRef.current) {
@@ -53,7 +55,7 @@ const MultiImageUpload = ({ images, onChange, maxImages = 5, folder = 'general' 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
         {images.map((image, index) => (
           <div key={image.publicId || index} className="relative group border rounded-lg overflow-hidden bg-gray-50 aspect-square">
-            <img src={image.url} alt={`Preview ${index}`} className="w-full h-full object-cover" />
+            <img src={image.url} alt={t('multi_image_upload.preview', { index })} className="w-full h-full object-cover" />
             <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-opacity" />
             
             <button
@@ -66,7 +68,7 @@ const MultiImageUpload = ({ images, onChange, maxImages = 5, folder = 'general' 
             
             {index === 0 && (
               <div className="absolute bottom-2 left-2 px-2 py-1 bg-black text-white text-xs rounded shadow-sm">
-                Primary
+                {t('multi_image_upload.primary')}
               </div>
             )}
           </div>
@@ -82,12 +84,12 @@ const MultiImageUpload = ({ images, onChange, maxImages = 5, folder = 'general' 
             {isUploading ? (
               <div className="flex flex-col items-center space-y-2 text-gray-500">
                 <Loader2 className="animate-spin w-6 h-6" />
-                <span className="text-xs">Uploading...</span>
+                <span className="text-xs">{t('multi_image_upload.uploading')}</span>
               </div>
             ) : (
               <div className="flex flex-col items-center space-y-2 text-gray-500 p-4 text-center">
                 <Upload className="w-6 h-6" />
-                <span className="text-xs font-medium">Add Image</span>
+                <span className="text-xs font-medium">{t('multi_image_upload.add_image')}</span>
                 <span className="text-[10px]">{images.length}/{maxImages}</span>
               </div>
             )}

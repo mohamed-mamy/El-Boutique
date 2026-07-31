@@ -4,13 +4,13 @@ const productSchema = new mongoose.Schema(
   {
     nameAr: {
       type: String,
-      required: [true, 'Arabic name is required'],
       trim: true,
+      default: '',
     },
     nameFr: {
       type: String,
-      required: [true, 'French name is required'],
       trim: true,
+      default: '',
     },
     descriptionAr: {
       type: String,
@@ -50,7 +50,6 @@ const productSchema = new mongoose.Schema(
     },
     quantity: {
       type: Number,
-      required: [true, 'Quantity is required'],
       min: [0, 'Quantity cannot be negative'],
       default: 0,
     },
@@ -62,7 +61,7 @@ const productSchema = new mongoose.Schema(
     brand: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Brand',
-      required: [true, 'Brand is required'],
+      default: null,
     },
     isFeatured: {
       type: Boolean,

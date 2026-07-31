@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "nodemon",
     "start": "node src/server.js",
-    "seed": "node src/scripts/seed.js"
+    "seed": "node src/scripts/seed.js",
+    "seed:products": "node src/scripts/seed-products.js",
+    "create:dbs": "node src/scripts/create-databases.js"
   },
   "keywords": [
     "ecommerce",

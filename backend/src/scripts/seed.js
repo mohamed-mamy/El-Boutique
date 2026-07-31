@@ -2,9 +2,6 @@
  * Seed script — creates the single Admin user if not already present.
  * 
  * Usage: npm run seed
- * 
- * Reads credentials from environment variables:
- *   ADMIN_EMAIL, ADMIN_PASSWORD, ADMIN_NAME
  */
 
 require('dotenv').config();
@@ -19,21 +16,21 @@ const seedAdmin = async () => {
     await mongoose.connect(process.env.MONGODB_URI);
     console.log('✅ Connected to MongoDB');
 
-    const email = process.env.ADMIN_EMAIL || 'admin@elboutique.com';
+    const phone = '46335337';
     const password = process.env.ADMIN_PASSWORD || 'Admin@123';
     const name = process.env.ADMIN_NAME || 'Admin';
 
     // Check if admin already exists
-    const existingAdmin = await Admin.findOne({ email });
+    const existingAdmin = await Admin.findOne({ phone });
 
     if (existingAdmin) {
-      console.log(`⚠️  Admin already exists: ${email}`);
+      console.log(`⚠️  Admin already exists: ${phone}`);
       console.log('   Skipping admin seed. No changes made.');
     } else {
-      const admin = await Admin.create({ name, email, password });
+      const admin = await Admin.create({ name, phone, password });
       console.log(`✅ Admin created successfully:`);
       console.log(`   Name:  ${admin.name}`);
-      console.log(`   Email: ${admin.email}`);
+      console.log(`   Phone: ${admin.phone}`);
     }
 
     // Seed settings

@@ -17,6 +17,12 @@ const FacebookIcon = ({ className }) => (
   </svg>
 );
 
+const TiktokIcon = ({ className }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/>
+  </svg>
+);
+
 const Footer = () => {
   const { t } = useTranslation();
   const { settings } = useSettings();
@@ -32,14 +38,19 @@ const Footer = () => {
           </div>
           
           <div className="flex gap-6">
-            {settings?.socialMedia?.instagram && (
-              <a href={settings.socialMedia.instagram} target="_blank" rel="noopener noreferrer" className="text-primary-600 hover:text-primary-900 transition-colors">
+            {settings?.socialLinks?.instagram && (
+              <a href={settings.socialLinks.instagram} target="_blank" rel="noopener noreferrer" className="text-primary-600 hover:text-primary-900 transition-colors">
                 <InstagramIcon className="w-5 h-5" />
               </a>
             )}
-            {settings?.socialMedia?.facebook && (
-              <a href={settings.socialMedia.facebook} target="_blank" rel="noopener noreferrer" className="text-primary-600 hover:text-primary-900 transition-colors">
+            {settings?.socialLinks?.facebook && (
+              <a href={settings.socialLinks.facebook} target="_blank" rel="noopener noreferrer" className="text-primary-600 hover:text-primary-900 transition-colors">
                 <FacebookIcon className="w-5 h-5" />
+              </a>
+            )}
+            {settings?.socialLinks?.tiktok && (
+              <a href={settings.socialLinks.tiktok} target="_blank" rel="noopener noreferrer" className="text-primary-600 hover:text-primary-900 transition-colors">
+                <TiktokIcon className="w-5 h-5" />
               </a>
             )}
             {settings?.phoneNumber && (

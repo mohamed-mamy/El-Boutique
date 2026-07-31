@@ -34,12 +34,12 @@ const ProductCard = ({ product }) => {
         <div className="absolute top-3 left-3 flex flex-col gap-2">
           {hasDiscount && (
             <span className="bg-primary-900 text-white text-[10px] uppercase tracking-widest font-medium px-3 py-1">
-              Sale
+              {t('common.sale')}
             </span>
           )}
           {product.isFeatured && (
             <span className="bg-accent-200 text-primary-900 text-[10px] uppercase tracking-widest font-medium px-3 py-1">
-              Hot
+              {t('common.hot')}
             </span>
           )}
         </div>

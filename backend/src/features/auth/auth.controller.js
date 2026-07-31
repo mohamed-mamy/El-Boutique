@@ -19,25 +19,25 @@ const generateToken = (id) => {
  */
 const login = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
+    const { phone, password } = req.body;
 
     // Validate input
-    if (!email || !password) {
-      return next(new AppError('Please provide email and password', 400));
+    if (!phone || !password) {
+      return next(new AppError('Please provide phone and password', 400));
     }
 
     // Find admin with password (select: false by default)
-    const admin = await Admin.findOne({ email }).select('+password');
+    const admin = await Admin.findOne({ phone }).select('+password');
 
     if (!admin) {
-      return next(new AppError('Invalid email or password', 401));
+      return next(new AppError('Invalid phone or password', 401));
     }
 
     // Check password
     const isMatch = await admin.comparePassword(password);
 
     if (!isMatch) {
-      return next(new AppError('Invalid email or password', 401));
+      return next(new AppError('Invalid phone or password', 401));
     }
 
     // Generate token
@@ -48,7 +48,7 @@ const login = async (req, res, next) => {
       admin: {
         id: admin._id,
         name: admin.name,
-        email: admin.email,
+        phone: admin.phone,
       },
     }, 'Login successful');
   } catch (error) {
@@ -67,7 +67,7 @@ const getMe = async (req, res, next) => {
       admin: {
         id: req.admin._id,
         name: req.admin.name,
-        email: req.admin.email,
+        phone: req.admin.phone,
       },
     }, 'Admin profile retrieved');
   } catch (error) {
@@ -75,4 +75,41 @@ const getMe = async (req, res, next) => {
   }
 };
 
-module.exports = { login, getMe };
+/**
+ * @desc    Update admin credentials (phone & password)
+ * @route   PUT /api/auth/credentials
+ * @access  Private
+ */
+const updateCredentials = async (req, res, next) => {
+  try {
+    const { currentPassword, phone, newPassword } = req.body;
+
+    if (!currentPassword) {
+      return next(new AppError('Current password is required', 400));
+    }
+
+    const admin = await Admin.findById(req.admin._id).select('+password');
+    const isMatch = await admin.comparePassword(currentPassword);
+
+    if (!isMatch) {
+      return next(new AppError('Current password is incorrect', 400));
+    }
+
+    if (phone) admin.phone = phone;
+    if (newPassword) admin.password = newPassword;
+
+    await admin.save();
+
+    sendSuccess(res, {
+      admin: {
+        id: admin._id,
+        name: admin.name,
+        phone: admin.phone,
+      },
+    }, 'Credentials updated successfully');
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { login, getMe, updateCredentials };

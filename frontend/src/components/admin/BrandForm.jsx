@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { X, Loader2 } from 'lucide-react';
 import api from '../../config/axios';
 
 const BrandForm = ({ brand, onClose, onSuccess }) => {
+  const { i18n, t } = useTranslation();
   const isEdit = !!brand;
+  const lang = i18n.language === 'ar' ? 'Ar' : 'Fr';
   
   const [formData, setFormData] = useState({
     nameAr: brand?.nameAr || '',
@@ -24,6 +27,13 @@ const BrandForm = ({ brand, onClose, onSuccess }) => {
     setError('');
     setIsSubmitting(true);
 
+    const nameField = `name${lang}`;
+    if (!formData[nameField]?.trim()) {
+      setError(i18n.language === 'ar' ? 'الاسم مطلوب' : 'Le nom est requis');
+      setIsSubmitting(false);
+      return;
+    }
+
     try {
       if (isEdit) {
         await api.put(`/brands/${brand._id}`, formData);
@@ -32,7 +42,7 @@ const BrandForm = ({ brand, onClose, onSuccess }) => {
       }
       onSuccess();
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to save brand');
+      setError(err.response?.data?.message || t('admin.failed_save_brand'));
       setIsSubmitting(false);
     }
   };
@@ -45,7 +55,7 @@ const BrandForm = ({ brand, onClose, onSuccess }) => {
         <div className="relative inline-block w-full max-w-md p-6 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-xl">
           <div className="flex items-center justify-between mb-5">
             <h3 className="text-lg font-medium leading-6 text-gray-900">
-              {isEdit ? 'Edit Brand' : 'Add Brand'}
+              {isEdit ? t('admin.edit_brand') : t('admin.add_brand_modal')}
             </h3>
             <button onClick={onClose} className="text-gray-400 hover:text-gray-500 transition-colors">
               <X size={20} />
@@ -59,35 +69,19 @@ const BrandForm = ({ brand, onClose, onSuccess }) => {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Name (French)
-                </label>
-                <input
-                  type="text"
-                  name="nameFr"
-                  required
-                  value={formData.nameFr}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black focus:border-black sm:text-sm"
-                  dir="ltr"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1 text-right">
-                  الاسم (عربي)
-                </label>
-                <input
-                  type="text"
-                  name="nameAr"
-                  required
-                  value={formData.nameAr}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black focus:border-black sm:text-sm"
-                  dir="rtl"
-                />
-              </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                {t('admin.name')}
+              </label>
+              <input
+                type="text"
+                name={`name${lang}`}
+                required
+                value={formData[`name${lang}`]}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black focus:border-black sm:text-sm"
+                dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}
+              />
             </div>
 
 
@@ -101,7 +95,7 @@ const BrandForm = ({ brand, onClose, onSuccess }) => {
                 className="h-4 w-4 text-black focus:ring-black border-gray-300 rounded"
               />
               <label htmlFor="isActive" className="ml-2 block text-sm text-gray-900">
-                Active (visible on website)
+                {t('admin.active_visible')}
               </label>
             </div>
 
@@ -111,7 +105,7 @@ const BrandForm = ({ brand, onClose, onSuccess }) => {
                 onClick={onClose}
                 className="flex-1 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black transition-colors"
               >
-                Cancel
+                {t('common.cancel')}
               </button>
               <button
                 type="submit"
@@ -121,7 +115,7 @@ const BrandForm = ({ brand, onClose, onSuccess }) => {
                 {isSubmitting ? (
                   <Loader2 className="animate-spin" size={18} />
                 ) : (
-                  isEdit ? 'Save Changes' : 'Create Brand'
+                  isEdit ? t('admin.save_changes') : t('admin.add_brand_modal')
                 )}
               </button>
             </div>

@@ -67,7 +67,7 @@ const ImageUpload = ({ value, onChange, folder = 'general' }) => {
       
       {value?.url ? (
         <div className="relative inline-block border rounded-lg overflow-hidden bg-gray-50">
-          <img src={value.url} alt="Preview" className="h-32 w-auto object-contain" />
+          <img src={value.url} alt={t('image_upload.preview')} className="h-32 w-auto object-contain" />
           <button
             type="button"
             onClick={handleRemove}

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
 import { useSettings } from '../../context/SettingsContext';
 import api from '../../config/axios';
-import { Lock, Mail, AlertCircle, Loader2, Package } from 'lucide-react';
+import { Lock, Phone, AlertCircle, Loader2, Package } from 'lucide-react';
 
 const LoginPage = () => {
   const { t } = useTranslation();
@@ -12,7 +12,7 @@ const LoginPage = () => {
   const { login } = useAuth();
   const { settings } = useSettings();
   
-  const [formData, setFormData] = useState({ email: '', password: '' });
+  const [formData, setFormData] = useState({ phone: '', password: '' });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -34,7 +34,7 @@ const LoginPage = () => {
       }
     } catch (err) {
       setError(
-        err.response?.data?.message || 'Login failed. Please check your credentials.'
+        err.response?.data?.message || t('login.failed')
       );
     } finally {
       setIsLoading(false);
@@ -48,10 +48,10 @@ const LoginPage = () => {
           <Package size={32} />
         </div>
         <h2 className="text-3xl font-extrabold text-gray-900">
-          Admin Login
+          {t('login.title')}
         </h2>
         <p className="mt-2 text-center text-sm text-gray-600">
-          Sign in to manage {settings?.storeName || 'El Boutique'}
+          {t('login.subtitle')} {settings?.storeName || 'El Boutique'}
         </p>
       </div>
 
@@ -68,19 +68,19 @@ const LoginPage = () => {
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
               <label className="block text-sm font-medium text-gray-700">
-                Email Address
+                {t('login.phone')}
               </label>
               <div className="mt-1 relative rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Mail className="h-5 w-5 text-gray-400" />
+                  <Phone className="h-5 w-5 text-gray-400" />
                 </div>
                 <input
-                  name="email"
-                  type="email"
+                  name="phone"
+                  type="tel"
                   required
                   className="focus:ring-black focus:border-black block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2 border"
-                  placeholder="admin@elboutique.com"
-                  value={formData.email}
+                  placeholder={t('login.phone_placeholder')}
+                  value={formData.phone}
                   onChange={handleChange}
                   dir="ltr"
                 />
@@ -89,7 +89,7 @@ const LoginPage = () => {
 
             <div>
               <label className="block text-sm font-medium text-gray-700">
-                Password
+                {t('login.password')}
               </label>
               <div className="mt-1 relative rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -117,10 +117,10 @@ const LoginPage = () => {
                 {isLoading ? (
                   <span className="flex items-center gap-2">
                     <Loader2 className="animate-spin" size={18} />
-                    Signing in...
+                    {t('login.signing_in')}
                   </span>
                 ) : (
-                  'Sign In'
+                  t('login.sign_in')
                 )}
               </button>
             </div>

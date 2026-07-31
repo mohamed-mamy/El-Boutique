@@ -64,7 +64,7 @@ const BrandsPage = () => {
         setIsConfirmOpen(false);
       }
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to delete brand');
+      setError(err.response?.data?.message || t('admin.failed_delete_brand'));
     } finally {
       setIsDeleting(false);
     }
@@ -133,14 +133,14 @@ const BrandsPage = () => {
                       <button
                         onClick={() => handleEdit(brand)}
                         className="p-1.5 text-primary-500 hover:text-primary-900 hover:bg-primary-50 rounded-full transition-colors"
-                        title="Edit"
+                         title={t('common.edit')}
                       >
                         <Edit2 size={18} strokeWidth={1.5} />
                       </button>
                       <button
                         onClick={() => handleDeleteClick(brand)}
                         className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-full transition-colors"
-                        title="Delete"
+                         title={t('common.delete')}
                       >
                         <Trash2 size={18} strokeWidth={1.5} />
                       </button>
@@ -152,8 +152,8 @@ const BrandsPage = () => {
                 <tr>
                   <td colSpan="3" className="px-0 py-0">
                     <EmptyState 
-                      title="No brands found" 
-                      description="Get started by creating your first product brand."
+                      title={t('admin.no_brands')} 
+                      description={t('admin.no_brands_desc')}
                     />
                   </td>
                 </tr>
@@ -176,12 +176,12 @@ const BrandsPage = () => {
         isOpen={isConfirmOpen}
         onClose={() => setIsConfirmOpen(false)}
         onConfirm={handleConfirmDelete}
-        title="Delete Brand"
+        title={t('admin.delete_brand')}
         message={
           error ? (
             <span className="text-red-600 font-medium">{error}</span>
           ) : (
-            `Are you sure you want to delete "${selectedBrand?.nameFr}"? This action cannot be undone.`
+            t('admin.confirm_delete_brand', { name: selectedBrand?.nameFr || selectedBrand?.nameAr })
           )
         }
         isLoading={isDeleting}

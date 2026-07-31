@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 const CategoryPills = ({ categories, selectedCategory, onSelectCategory }) => {
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
 
   if (!categories || categories.length === 0) return null;
 

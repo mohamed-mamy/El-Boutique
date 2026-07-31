@@ -5,6 +5,7 @@ const morgan = require('morgan');
 
 // Route imports
 const healthRoute = require('./routes/health.route');
+const healthCheckRoute = require('./routes/healthCheck.route');
 const authRoute = require('./features/auth/auth.route');
 const uploadRoute = require('./features/upload/upload.route');
 const categoryRoute = require('./features/categories/category.route');
@@ -38,6 +39,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 // ─── Routes ──────────────────────────────────────────
+app.use('/health', healthCheckRoute);
 app.use('/api/health', healthRoute);
 app.use('/api/auth', authRoute);
 app.use('/api/upload', uploadRoute);

@@ -46,13 +46,13 @@ const CartPage = () => {
       
       if (response.data.success) {
         // Construct WhatsApp Message
-        let message = `*New Order - ${response.data.data.orderNumber}*%0A%0A`;
-        message += `*Customer:* ${formData.customerName}%0A`;
-        message += `*Phone:* ${formData.customerPhone}%0A`;
+        let message = `*${t('cart.new_order')} - ${response.data.data.orderNumber}*%0A%0A`;
+        message += `*${t('cart.customer')}:* ${formData.customerName}%0A`;
+        message += `*${t('cart.phone')}:* ${formData.customerPhone}%0A`;
         if (formData.note) {
-          message += `*Note:* ${formData.note}%0A`;
+          message += `*${t('cart.note')}:* ${formData.note}%0A`;
         }
-        message += `%0A*Items:*%0A`;
+        message += `%0A*${t('cart.items')}:*%0A`;
         
         cartItems.forEach(item => {
           const name = i18n.language === 'ar' ? item.product.nameAr : item.product.nameFr;
@@ -60,7 +60,7 @@ const CartPage = () => {
           message += `- ${item.quantity}x ${name} (${price} MRU)%0A`;
         });
         
-        message += `%0A*Total:* ${cartTotal} MRU`;
+        message += `%0A*${t('cart.total')}:* ${cartTotal} MRU`;
 
         // Clear cart
         clearCart();
@@ -70,10 +70,10 @@ const CartPage = () => {
         const waLink = `https://wa.me/${waNumber}?text=${message}`;
         window.open(waLink, '_blank');
         
-        toast.success('Order placed successfully! Redirecting to WhatsApp...');
+        toast.success(t('cart.order_success'));
       }
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to place order. Please try again.');
+      setError(err.response?.data?.message || t('cart.order_failed'));
     } finally {
       setIsSubmitting(false);
     }
@@ -140,13 +140,13 @@ const CartPage = () => {
                           </h3>
                         </Link>
                         {product.color && (
-                          <p className="text-[11px] uppercase tracking-[0.1em] text-primary-500 mt-2">Color: {product.color}</p>
+                          <p className="text-[11px] uppercase tracking-[0.1em] text-primary-500 mt-2">{t('cart.color')}{product.color}</p>
                         )}
                       </div>
                       <button 
                         onClick={() => removeFromCart(product._id)}
                         className="text-primary-400 hover:text-accent-700 transition-colors p-2 -mr-2 -mt-2"
-                        title="Remove Item"
+                        title={t('cart.remove')}
                       >
                         <Trash2 className="w-5 h-5" strokeWidth={1.5} />
                       </button>
@@ -224,7 +224,7 @@ const CartPage = () => {
                   value={formData.customerName}
                   onChange={handleInputChange}
                   required
-                  placeholder="e.g. John Doe"
+                  placeholder={t('cart.name_placeholder')}
                   className="w-full px-4 py-3.5 bg-white border border-primary-200 focus:outline-none focus:border-primary-500 transition-colors text-primary-900 placeholder:text-primary-300"
                 />
               </div>
@@ -239,7 +239,7 @@ const CartPage = () => {
                   value={formData.customerPhone}
                   onChange={handleInputChange}
                   required
-                  placeholder="e.g. 0555 55 55 55"
+                  placeholder={t('cart.phone_placeholder')}
                   className="w-full px-4 py-3.5 bg-white border border-primary-200 focus:outline-none focus:border-primary-500 transition-colors text-primary-900 placeholder:text-primary-300"
                 />
               </div>
@@ -252,7 +252,7 @@ const CartPage = () => {
                   name="note"
                   value={formData.note}
                   onChange={handleInputChange}
-                  placeholder="Any special requests?"
+                  placeholder={t('cart.note_placeholder')}
                   rows="3"
                   className="w-full px-4 py-3.5 bg-white border border-primary-200 focus:outline-none focus:border-primary-500 transition-colors text-primary-900 placeholder:text-primary-300 resize-none"
                 />

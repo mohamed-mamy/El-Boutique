@@ -38,7 +38,7 @@ const ProductDetailPage = () => {
           api.patch(`/products/${id}/view`).catch(() => {});
         }
       } catch (err) {
-        setError(err.response?.data?.message || 'Failed to load product');
+        setError(err.response?.data?.message || t('admin.failed_save'));
       } finally {
         setLoading(false);
       }
@@ -60,10 +60,10 @@ const ProductDetailPage = () => {
     return (
       <div className="flex flex-col justify-center items-center min-h-[60vh] text-center px-4 fade-in">
         <AlertCircle className="w-12 h-12 text-primary-400 mb-6" strokeWidth={1.5} />
-        <h2 className="text-2xl font-serif text-primary-900 mb-3">Product Not Found</h2>
-        <p className="text-primary-600 mb-8 font-light">{error || 'This product might be out of stock or removed.'}</p>
+        <h2 className="text-2xl font-serif text-primary-900 mb-3">{t('product_detail.not_found')}</h2>
+        <p className="text-primary-600 mb-8 font-light">{error || t('product_detail.not_found_desc')}</p>
         <Link to="/products" className="bg-primary-900 text-white px-8 py-3 rounded-none text-[11px] uppercase tracking-[0.15em] font-medium hover:bg-primary-800 transition-colors">
-          Back to Shop
+          {t('product_detail.back_to_shop')}
         </Link>
       </div>
     );
@@ -90,7 +90,7 @@ const ProductDetailPage = () => {
         });
       } else {
         await navigator.clipboard.writeText(window.location.href);
-        toast.success('Link copied to clipboard!');
+        toast.success(t('product_detail.link_copied'));
       }
     } catch (err) {
       console.log('Error sharing', err);
@@ -111,12 +111,12 @@ const ProductDetailPage = () => {
             />
             {hasDiscount && (
               <span className="absolute top-6 left-6 bg-primary-900 text-white text-[10px] uppercase tracking-widest font-medium px-4 py-1.5">
-                Sale
+                {t('common.sale')}
               </span>
             )}
             {product.isFeatured && (
               <span className="absolute top-6 right-6 bg-accent-200 text-primary-900 text-[10px] uppercase tracking-widest font-medium px-4 py-1.5">
-                Hot
+                {t('common.hot')}
               </span>
             )}
           </div>
@@ -151,7 +151,7 @@ const ProductDetailPage = () => {
               )}
             </div>
             
-            <button onClick={handleShare} className="text-primary-400 hover:text-primary-900 transition-colors" title="Share">
+            <button onClick={handleShare} className="text-primary-400 hover:text-primary-900 transition-colors" title={t('product_detail.share')}>
               <Share2 size={18} strokeWidth={1.5} />
             </button>
           </div>
@@ -179,14 +179,14 @@ const ProductDetailPage = () => {
           <div className="grid grid-cols-2 gap-8 mb-12 py-8 border-y border-primary-200">
             {product.color && (
               <div>
-                <span className="block text-[11px] uppercase tracking-[0.1em] text-primary-500 mb-2">Color</span>
+                <span className="block text-[11px] uppercase tracking-[0.1em] text-primary-500 mb-2">{t('product_detail.color')}</span>
                 <span className="text-base text-primary-900 font-medium">{product.color}</span>
               </div>
             )}
             <div>
-              <span className="block text-[11px] uppercase tracking-[0.1em] text-primary-500 mb-2">Availability</span>
+              <span className="block text-[11px] uppercase tracking-[0.1em] text-primary-500 mb-2">{t('product_detail.availability')}</span>
               <span className={`text-base font-medium ${outOfStock ? 'text-primary-400' : 'text-primary-900'}`}>
-                {outOfStock ? 'Out of Stock' : `${product.quantity} In Stock`}
+                {outOfStock ? t('product_detail.out_of_stock') : t('product_detail.in_stock_qty', { qty: product.quantity })}
               </span>
             </div>
           </div>
@@ -242,7 +242,7 @@ const ProductDetailPage = () => {
         <section className="pt-16 border-t border-primary-200">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-serif tracking-wide text-primary-900 mb-4">
-              You might also like
+              {t('product_detail.you_might_also_like')}
             </h2>
             <div className="w-12 h-0.5 bg-primary-300 mx-auto"></div>
           </div>

@@ -10,7 +10,10 @@ const { deleteImage } = require('../../utils/cloudinary');
  */
 const createProduct = async (req, res, next) => {
   try {
-    const product = await Product.create(req.body);
+    const data = { ...req.body };
+    if (!data.brand) data.brand = null;
+
+    const product = await Product.create(data);
     sendCreated(res, product, 'Product created successfully');
   } catch (error) {
     next(error);
@@ -39,10 +42,9 @@ const getProducts = async (req, res, next) => {
 
     const filter = {};
 
-    // If not authenticated, hide inactive and out of stock
+    // If not authenticated, hide inactive
     if (!req.admin) {
       filter.isActive = true;
-      filter.quantity = { $gt: 0 };
     }
 
     if (category) filter.category = category;
@@ -140,8 +142,8 @@ const getProductById = async (req, res, next) => {
  */
 const updateProduct = async (req, res, next) => {
   try {
-    // Check quantity to auto-toggle isActive
     const updateData = { ...req.body };
+    if (!updateData.brand) updateData.brand = null;
     if (updateData.quantity !== undefined && updateData.quantity <= 0) {
       updateData.isActive = false;
     }

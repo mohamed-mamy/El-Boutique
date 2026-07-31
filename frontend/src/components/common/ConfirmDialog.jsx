@@ -1,7 +1,9 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { AlertTriangle, X } from 'lucide-react';
 
 const ConfirmDialog = ({ isOpen, onClose, onConfirm, title, message, isLoading }) => {
+  const { t } = useTranslation();
   if (!isOpen) return null;
 
   return (
@@ -30,7 +32,7 @@ const ConfirmDialog = ({ isOpen, onClose, onConfirm, title, message, isLoading }
               disabled={isLoading}
               className="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:w-auto sm:text-sm disabled:opacity-50"
             >
-              {isLoading ? 'Processing...' : 'Confirm'}
+              {isLoading ? t('common.processing') : t('common.confirm')}
             </button>
             <button
               type="button"
@@ -38,7 +40,7 @@ const ConfirmDialog = ({ isOpen, onClose, onConfirm, title, message, isLoading }
               disabled={isLoading}
               className="inline-flex justify-center w-full px-4 py-2 mt-3 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black sm:mt-0 sm:w-auto sm:text-sm"
             >
-              Cancel
+              {t('common.cancel')}
             </button>
           </div>
         </div>

@@ -47,20 +47,20 @@ const OrdersPage = () => {
     try {
       await api.patch(`/orders/${orderId}/status`, { status: newStatus });
       fetchOrders(); // Refresh to ensure data consistency
-      toast.success('Order status updated');
+      toast.success(t('admin.order_updated'));
     } catch (error) {
-      toast.error('Failed to update order status');
+      toast.error(t('admin.failed_update_status'));
     }
   };
 
   const handleDeleteOrder = async (orderId) => {
-    if (window.confirm('Are you sure you want to delete this order? This action cannot be undone.')) {
+    if (window.confirm(t('admin.confirm_delete_order'))) {
       try {
         await api.delete(`/orders/${orderId}`);
-        toast.success('Order deleted successfully');
+        toast.success(t('admin.order_deleted'));
         fetchOrders();
       } catch (error) {
-        toast.error('Failed to delete order');
+        toast.error(t('admin.order_deleted_fail'));
       }
     }
   };
@@ -112,8 +112,8 @@ const OrdersPage = () => {
                 <tr>
                   <td colSpan="6" className="px-0 py-0">
                     <EmptyState 
-                      title="No orders found" 
-                      description={statusFilter ? `No orders with status "${statusFilter}" were found.` : "You haven't received any orders yet."}
+                      title={t('admin.no_orders')} 
+                      description={statusFilter ? t('admin.no_orders_filtered', { status: statusFilter }) : t('admin.no_orders_yet')}
                     />
                   </td>
                 </tr>
@@ -144,10 +144,10 @@ const OrdersPage = () => {
                           'bg-[#fef2f2] text-[#b91c1c] border-[#fecaca]'
                         }`}
                       >
-                        <option value="pending">Pending</option>
-                        <option value="confirmed">Confirmed</option>
-                        <option value="completed">Completed</option>
-                        <option value="cancelled">Cancelled</option>
+                         <option value="pending">{t('admin.pending')}</option>
+                         <option value="confirmed">{t('admin.confirmed')}</option>
+                         <option value="completed">{t('admin.completed')}</option>
+                         <option value="cancelled">{t('admin.cancelled')}</option>
                       </select>
                     </td>
                     <td className="px-6 py-5 whitespace-nowrap text-right text-sm font-medium">
@@ -157,21 +157,21 @@ const OrdersPage = () => {
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-primary-400 hover:text-[#15803d] transition-colors"
-                          title="WhatsApp Customer"
+                           title={t('admin.whatsapp_customer')}
                         >
                           <MessageCircle size={18} strokeWidth={1.5} />
                         </a>
                         <button
                           onClick={() => navigate(`/admin/orders/${order._id}`)}
                           className="text-primary-400 hover:text-primary-900 transition-colors"
-                          title="View Details"
+                           title={t('admin.view_details')}
                         >
                           <Eye size={18} strokeWidth={1.5} />
                         </button>
                         <button
                           onClick={() => handleDeleteOrder(order._id)}
                           className="text-primary-400 hover:text-accent-600 transition-colors"
-                          title="Delete Order"
+                           title={t('admin.delete_order')}
                         >
                           <Trash2 size={18} strokeWidth={1.5} />
                         </button>
@@ -188,7 +188,7 @@ const OrdersPage = () => {
         {pagination && pagination.pages > 1 && (
           <div className="px-6 py-4 border-t border-primary-200 bg-primary-50/50 flex items-center justify-between">
             <span className="text-sm text-primary-600">
-              Page <span className="font-medium text-primary-900">{pagination.page}</span> of <span className="font-medium text-primary-900">{pagination.pages}</span>
+              {t('common.page')} <span className="font-medium text-primary-900">{pagination.page}</span> {t('common.of')} <span className="font-medium text-primary-900">{pagination.pages}</span>
             </span>
             <div className="flex gap-2">
               <button
@@ -196,14 +196,14 @@ const OrdersPage = () => {
                 disabled={page === 1}
                 className="px-4 py-2 border border-primary-200 bg-white text-[11px] uppercase tracking-wider font-medium text-primary-700 hover:bg-primary-50 transition-colors disabled:opacity-50"
               >
-                Previous
+                {t('common.previous')}
               </button>
               <button
                 onClick={() => setPage((p) => Math.min(pagination.pages, p + 1))}
                 disabled={page === pagination.pages}
                 className="px-4 py-2 border border-primary-200 bg-white text-[11px] uppercase tracking-wider font-medium text-primary-700 hover:bg-primary-50 transition-colors disabled:opacity-50"
               >
-                Next
+                {t('common.next')}
               </button>
             </div>
           </div>

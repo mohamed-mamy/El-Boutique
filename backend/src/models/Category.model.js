@@ -4,15 +4,13 @@ const categorySchema = new mongoose.Schema(
   {
     nameAr: {
       type: String,
-      required: [true, 'Arabic name is required'],
-      unique: true,
       trim: true,
+      default: '',
     },
     nameFr: {
       type: String,
-      required: [true, 'French name is required'],
-      unique: true,
       trim: true,
+      default: '',
     },
 
     isActive: {
